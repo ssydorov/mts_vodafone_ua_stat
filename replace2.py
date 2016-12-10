@@ -1,4 +1,11 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Nov 20 22:35:34 2016
+
+@author: Sergiy Sydorov
+"""
+
 #
 # company_code - лицевой счет по которому обрабатывается выписка
 company_code = "295380282427"
