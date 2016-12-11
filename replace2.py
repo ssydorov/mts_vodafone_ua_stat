@@ -6,6 +6,7 @@ Created on Sun Nov 20 22:35:34 2016
 @author: Sergiy Sydorov
 """
 import re
+
 #
 # company_code - лицевой счет по которому обрабатывается выписка
 company_code = "295380282427"
@@ -19,17 +20,19 @@ month_real = "11"
 FileNameInput = "invoice_" + company_code + "_" + year + "_" + month + ".csv"
 # FileNameInput = "input.txt"
 # FileNameOutput имя результирующего файла
-FileNameOutput  = "invoice_" + company_code + "_" + year + "_" + month_real + ".txt"
+FileNameOutput = "invoice_" + company_code + "_" + year + "_" + month_real + ".txt"
 # FileNameOutput = "output.txt"
 # словарь словосочетаний нуждающихся в замене для коррекной работы парсера
-replacements = {'"Вихідні дзвінки, SMS, передача даних"' : 'Вихідні дзвінки, SMS, передача даних', '"ПОСЛУГИ, НАДАНІ ЗА МЕЖАМИ ПАКЕТА:"' : 'ПОСЛУГИ, НАДАНІ ЗА МЕЖАМИ ПАКЕТА:',  '"КОНТЕНТ-ПОСЛУГИ:"' : 'КОНТЕНТ-ПОСЛУГИ:', '"НАДАНІ КОНТЕНТ-ПОСЛУГИ:"' : 'НАДАНІ КОНТЕНТ-ПОСЛУГИ:', 'GSM Просто Супер' : '"GSM Просто Супер"'}
+replacements = {'"Вихідні дзвінки, SMS, передача даних"': 'Вихідні дзвінки, SMS, передача даних',
+                '"ПОСЛУГИ, НАДАНІ ЗА МЕЖАМИ ПАКЕТА:"': 'ПОСЛУГИ, НАДАНІ ЗА МЕЖАМИ ПАКЕТА:',
+                '"КОНТЕНТ-ПОСЛУГИ:"': 'КОНТЕНТ-ПОСЛУГИ:', '"НАДАНІ КОНТЕНТ-ПОСЛУГИ:"': 'НАДАНІ КОНТЕНТ-ПОСЛУГИ:',
+                'GSM Просто Супер': '"GSM Просто Супер"'}
 # чтение исходного файла
-f =open(FileNameInput).read()
+f = open(FileNameInput).read()
 newText = f
 # замена словосочетаний
 for i in replacements.keys():
     newText = newText.replace(i, replacements[i])
-
 
 # запись файла
 with open(FileNameOutput, "w") as f:
@@ -45,8 +48,10 @@ fo = open(file_output, 'w')
 fd = open(file_detail, 'w')
 
 # запись шапки
-fo.write('год;месяц;контракт;тарифный план;стоимость пакета;сверх пакета;контент;заказ услуг;роуминг;спец услуги;скидки;итого' + '\n')
-fd.write('год,месяц,контракт,,,,,услуга,оператор,номер,дата,время,длительность/объём,,стоимость'+ '\n' )
+fo.write(
+    "год;месяц;контракт;тарифный план;стоимость пакета;сверх пакета;контент;заказ услуг;роуминг;спец "
+    "услуги;скидки;итого" + '\n')
+fd.write('год,месяц,контракт,,,,,услуга,оператор,номер,дата,время,длительность/объём,,стоимость' + '\n')
 # парсинг файла
 kontrakt = ''
 tarif = ''
@@ -90,7 +95,7 @@ while line:
             line = fi.readline()
             result = re.findall(r'^\w+', line)
             if len(result) > 0 and result[0] == 'ПОСЛУГИ':
-                result2= re.findall(r'\S+', line)
+                result2 = re.findall(r'\S+', line)
                 if result2[1] == 'НАДАНІ':
                     result4 = re.findall(r'(?:\d*\.)?\d+', line)
                     over_paket = str(result4[0])
@@ -118,10 +123,13 @@ while line:
             line = fi.readline()
     if i != 0:
         # запись общей статистики
-        fo.write('{0};{1};{2};{3};{4};{5};{6};{7};{8};{9};{10};{11}\n'.format(year_real, month_real, kontrakt, tarif, paket, over_paket, content, zakaz, rouming, spicial, skidki, itogo))
+        fo.write(
+            '{0};{1};{2};{3};{4};{5};{6};{7};{8};{9};{10};{11}\n'.format(year_real, month_real, kontrakt, tarif, paket,
+                                                                         over_paket, content, zakaz, rouming, spicial,
+                                                                         skidki, itogo))
         kontrakt2 = kontrakt
     line = fi.readline()
-    if len(line) > 2 :
+    if len(line) > 2:
         if line[0] == ',' and line[1] == ',':
             # запись детализации
             fd.write(year_real + ',' + month_real + ',' + kontrakt2 + ',')
