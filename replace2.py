@@ -10,17 +10,24 @@ import re
 #
 # company_code - лицевой счет по которому обрабатывается выписка
 company_code = "295380282427"
-# year - год выписки
-year = "2016"
-year_real = "2016"
 # month - месяц выписки
-month = "12"
-month_real = "11"
+month = 12
+if month == 1:
+    month_real = 12
+else:
+    month_real = month - 1
+# year - год выписки
+year = 2016
+if month == 1:
+    year_real = year - 1
+else:
+    year_real = year
+
 # FileNameInput имя входного файла
-FileNameInput = "invoice_" + company_code + "_" + year + "_" + month + ".csv"
+FileNameInput = "invoice_" + company_code + "_" + str(year) + "_" + str(month) + ".csv"
 # FileNameInput = "input.txt"
 # FileNameOutput имя результирующего файла
-FileNameOutput = "invoice_" + company_code + "_" + year + "_" + month_real + ".txt"
+FileNameOutput = "invoice_" + company_code + "_" + str(year_real) + "_" + str(month_real) + ".txt"
 # FileNameOutput = "output.txt"
 # словарь словосочетаний нуждающихся в замене для коррекной работы парсера
 replacements = {'"Вихідні дзвінки, SMS, передача даних"': 'Вихідні дзвінки, SMS, передача даних',
@@ -41,8 +48,8 @@ f.close()
 
 # открытие файла для парсинга
 file_input = FileNameOutput
-file_output = "invoice_" + company_code + "_" + year + "_" + month_real + "_out.txt"
-file_detail = "invoice_" + company_code + "_" + year_real + "_" + month_real + "_detail.txt"
+file_output = "invoice_" + company_code + "_" + str(year) + "_" + str(month_real) + "_out.txt"
+file_detail = "invoice_" + company_code + "_" + str(year_real) + "_" + str(month_real) + "_detail.txt"
 fi = open(file_input, 'r')
 fo = open(file_output, 'w')
 fd = open(file_detail, 'w')
@@ -122,17 +129,23 @@ while line:
             line2.append(line)
             line = fi.readline()
     if i != 0:
-        # запись общей статистики
+        # запись общей статистики (с заменой . на , для экселя)
         fo.write(
-            '{0};{1};{2};{3};{4};{5};{6};{7};{8};{9};{10};{11}\n'.format(year_real, month_real, kontrakt, tarif, paket,
-                                                                         over_paket, content, zakaz, rouming, spicial,
-                                                                         skidki, itogo))
+            '{0};{1};{2};{3};{4};{5};{6};{7};{8};{9};{10};{11}\n'.format(year_real, month_real, kontrakt, tarif,
+                                                                         paket.replace('.', ','),
+                                                                         over_paket.replace('.', ','),
+                                                                         content.replace('.', ','),
+                                                                         zakaz.replace('.', ','),
+                                                                         rouming.replace('.', ','),
+                                                                         spicial.replace('.', ','),
+                                                                         skidki.replace('.', ','),
+                                                                         itogo).replace('.', ','))
         kontrakt2 = kontrakt
     line = fi.readline()
     if len(line) > 2:
         if line[0] == ',' and line[1] == ',':
             # запись детализации
-            fd.write(year_real + ',' + month_real + ',' + kontrakt2 + ',')
+            fd.write(str(year_real) + ',' + str(month_real) + ',' + kontrakt2 + ',')
             fd.write(line)
 fi.close()
 fo.close()
