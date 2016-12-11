@@ -12,12 +12,14 @@ import re
 company_code = "295380282427"
 # month - месяц выписки
 month = 12
+# year - год выписки
+year = 2016
+
 if month == 1:
     month_real = 12
 else:
     month_real = month - 1
-# year - год выписки
-year = 2016
+
 if month == 1:
     year_real = year - 1
 else:
