@@ -5,7 +5,7 @@ Created on Sun Nov 20 22:35:34 2016
 
 @author: Sergiy Sydorov
 """
-
+import re
 #
 # company_code - лицевой счет по которому обрабатывается выписка
 company_code = "295380282427"
